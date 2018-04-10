@@ -24,9 +24,9 @@ tags:
 
 ## 建站流程
 
-1. 在 Github 中创建仓库 `username.github.io`
-2. 创建本地目录 `username.github.io` 并在目录中执行 `hexo init`
-4. 修改目录中的 `_config.yml` ，详见 [Hexo 配置](https://hexo.io/zh-cn/docs/configuration.html) ，如下为部署相关配置：
+*. 在 Github 中创建仓库 `username.github.io`
+*. 创建本地目录 `username.github.io` 并在目录中执行 `hexo init`
+*. 修改目录中的 `_config.yml` ，详见 [Hexo 配置](https://hexo.io/zh-cn/docs/configuration.html) ，如下为部署相关配置：
 
 ```安装 hexo-deployer-git，npm install hexo-deployer-git --save
 deploy:
@@ -35,11 +35,11 @@ deploy:
   branch: master
 ```
 
-5. 安装 hexo-deployer-git，`npm install hexo-deployer-git --save`
-6. 初始化本地 git 仓库，`git init`
-7. 本地仓库关联远程仓库，`git remote add origin git@github.com:User/username.github.io.git`
-8. 本地创建并切换到 hexo 分支 `git checkout -b hexo` 
-9. 提交本地 hexo 分支，推送并关联远程 hexo 分支
+*. 安装 hexo-deployer-git，`npm install hexo-deployer-git --save`
+*. 初始化本地 git 仓库，`git init`
+*. 本地仓库关联远程仓库，`git remote add origin git@github.com:User/username.github.io.git`
+*. 本地创建并切换到 hexo 分支 `git checkout -b hexo` 
+*. 提交本地 hexo 分支，推送并关联远程 hexo 分支
 
 
 ```shell
@@ -48,8 +48,8 @@ $ git commit -m'init hexo branch'
 $ git push -u origin hexo
 ```
 
-10. 将 hexo 分支设置为默认分支（使 clone 操作获取 hexo 分支内容）
-11. 生成静态页面并部署至 Github，`hexo g -d`
+*. 将 hexo 分支设置为默认分支（使 clone 操作获取 hexo 分支内容）
+*. 生成静态页面并部署至 Github，`hexo g -d`
 
 
 
