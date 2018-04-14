@@ -4,6 +4,8 @@ date: 2018-04-09 16:22:12
 tags:
 - Hexo
 - Github
+categories:
+- Tech
 ---
 [Hexo](https://hexo.io/) 是一款基于 Node.js 的静态博客框架，支持 Github Flavored Markdown 语法，可一键部署到 Github Pages。
 

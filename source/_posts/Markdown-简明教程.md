@@ -3,6 +3,8 @@ title: Markdown 简明教程
 date: 2017-04-17 00:16:09
 tags:
 - Markdown
+categories:
+- Tech
 ---
 ## 主要内容
 

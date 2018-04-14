@@ -3,6 +3,8 @@ title: 枚举类型强化 Singleton 属性
 date: 2017-05-03 08:28:45
 tags:
 - Java
+categories:
+- Tech
 ---
 **Singleton** 指仅仅被 **实例化一次** 的类，通常被用来代表本质上唯一的系统组件，如窗口管理器或文件系统。
 

@@ -3,6 +3,8 @@ title: JVM 内存区域
 date: 2018-03-27 10:36:14
 tags:
 - JVM
+categories:
+- Tech
 ---
 JVM 在执行 Java 程序的过程中会把它所管理的内存划分为如下几个数据区域：
 

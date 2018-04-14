@@ -3,6 +3,8 @@ title: JVM GC 与 内存分配策略
 date: 2018-03-28 16:07:47
 tags:
 - JVM
+categories:
+- Tech
 ---
 ## 对象存活算法
 
