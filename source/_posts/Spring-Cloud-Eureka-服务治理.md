@@ -1,8 +1,8 @@
 ---
 title: Spring Cloud Eureka 服务治理
-date: 2018-04-16 18:03:19
+date: 2018-03-20 18:03:19
 tags:
-- Spring-Cloud
+- Spring Cloud
 categories:
 - Tech
 ---
@@ -77,6 +77,7 @@ spring.application.name=eureka-server
 eureka.client.service-url.defaultZone=http://localhost:8761/eureka/,http://localhost:8762/eureka/
 
 # 关闭自我保护
+# 如 15 分钟内统计的心跳失败比例超过 85%，Eureka 会将所有实例信息保护起来，单机调试很容易出发保护机制
 # eureka.server.enable-self-preservation=false
 
 # 不向注册中间检索服务
