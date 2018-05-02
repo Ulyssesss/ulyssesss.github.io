@@ -92,3 +92,77 @@ ZooKeeper 通常以远程服务的方式被访问，在数据不发生变化时�
 仲裁模式下，如果让客户端等待所有服务器完成数据保存再继续，延迟问题就会很大，ZooKeeper 通过法定人数确定工作时必须有效运行的服务器最小数量。如果有 5 台服务器，任意 3 台服务器保存了数据，客户端就可以继续工作。其他 2 台服务器最终也会捕获到数据进行保存。
 
 服务器的个数应该为奇数，如有 5 台服务器，则最多允许 2 台崩溃。假如服务器个数为偶数，允许崩溃的服务器数量不会增加，法定人数却更大，需要更多的确认操作。
+
+
+
+## 开始使用 ZooKeeper
+
+开始使用 ZooKeeper 之前，需要 [下载 ZooKeeper 发行包](https://zookeeper.apache.org/) 。解压 tar 格式的压缩文件，bin 目录下有启动 ZooKeeper 的脚本，conf 目录下存放着 ZooKeeper 的配置文件，lib 目录下存放着一些运行所需的第三方文件。
+
+
+
+### 启动服务器
+
+在 ZooKeeper 目录下执行以下命令启动 ZooKeeper 服务器。
+
+```shell
+$ bin/zkServer.sh start
+```
+
+
+
+### 启动客户端
+
+```shell
+$ bin/zkCli.sh
+```
+
+
+
+### 列出根节点下的所有节点
+
+```shell
+[zk: localhost:2181(CONNECTED) 0] ls /
+[zookeeper]
+```
+
+
+
+### 创建节点
+
+```shell
+[zk: localhost:2181(CONNECTED) 1] create /test ""
+Created /test
+[zk: localhost:2181(CONNECTED) 2] ls /
+[zookeeper, test]
+```
+
+
+
+### 删除节点
+
+```shell
+[zk: localhost:2181(CONNECTED) 3] delete /test
+[zk: localhost:2181(CONNECTED) 4] ls /
+[zookeeper]
+```
+
+
+
+### 退出客户端
+
+```shell
+[zk: localhost:2181(CONNECTED) 5] quit
+Quitting...
+2018-05-02 15:58:34,004 [myid:] - INFO  [main:ZooKeeper@684] - Session: 0x1630a0cdc400001 closed
+2018-05-02 15:58:34,006 [myid:] - INFO  [main-EventThread:ClientCnxn$EventThread@519] - EventThread shut down for session: 0x1630a0cdc400001
+```
+
+
+
+### 关闭服务器
+
+```shell
+$ bin/zkServer.sh stop
+```
+
