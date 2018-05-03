@@ -202,7 +202,8 @@ public class Worker implements Watcher {
     }
 
     private void register() {
-        zk.create("/workers/worker-" + serviceId, "Idle".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL, createWorkerCallback, null);
+        zk.create("/workers/worker-" + serviceId, "Idle".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE
+                , CreateMode.EPHEMERAL, createWorkerCallback, null);
     }
 
     private AsyncCallback.StringCallback createWorkerCallback = new AsyncCallback.StringCallback() {
