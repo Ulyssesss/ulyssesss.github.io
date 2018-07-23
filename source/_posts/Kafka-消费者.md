@@ -288,3 +288,13 @@ Kafka 不支持处理消息和提交偏移量在一个原子操作中完成，�
 
 如果消费者只需从一个主题的所有分区或特定几个分区读取数据，就不需要加入消费者群组，而是直接通过 assign 方法为自己分配分区。注意不能同时为自己分配分区和加入消费者群组订阅主题。
 
+
+
+
+
+
+## 参考
+
+[Kafka 官方文档](http://kafka.apache.org/documentation/)
+
+[Kafka 权威指南](http://shop.oreilly.com/product/0636920044123.do)

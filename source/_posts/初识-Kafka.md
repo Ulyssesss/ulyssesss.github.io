@@ -122,3 +122,14 @@ Kafka 是一个具有灵活伸缩性的系统，可以先使用单个 broker，�
 ### 高性能
 
 通过横向扩展生产者、消费者和 broker，Kafka 可以轻松处理巨大的信息流，同时保证亚秒级的消息延迟。
+
+
+
+
+
+
+## 参考
+
+[Kafka 官方文档](http://kafka.apache.org/documentation/)
+
+[Kafka 权威指南](http://shop.oreilly.com/product/0636920044123.do)

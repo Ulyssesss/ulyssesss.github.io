@@ -162,3 +162,14 @@ Kafka 以日志片段的形式存储数据，前面提到的 log.retention.ms �
 一是修改 zookeeper.connect ，所有 broker 需使用相同的 ZooKeeper 地址来保存元数据。
 
 二是修改 broker.id 的值，broker.id 需在集群内唯一，否则将无法启动。
+
+
+
+
+
+
+## 参考
+
+[Kafka 官方文档](http://kafka.apache.org/documentation/)
+
+[Kafka 权威指南](http://shop.oreilly.com/product/0636920044123.do)
