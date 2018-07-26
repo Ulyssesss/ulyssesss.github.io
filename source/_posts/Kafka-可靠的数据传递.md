@@ -51,7 +51,7 @@ broker 有 3 个配置会影响消息存储的可靠性，应用在 broker 级�
 
 尽管可以将复制系数设为 3，可还是会出现只有一个同步副本的情况，如果唯一的同步副本不可用，就必须在可用性和一致性间做选择。如果要确保已提交的消息被写入到不止一个副本，就需要把最小同步副本的值设置大一点。
 
-最小同步副本在主题和 broker 级别均为 min.insync.replicas，如果设置为 2，则至少存在两个同步副本才能向分区写入数据。如果可用副本不足，生产者会受到 NotEnoughReplicasException，消费者仍然可以去读数据。
+最小同步副本在主题和 broker 级别均为 min.insync.replicas，如果设置为 2，则至少存在两个同步副本才能向分区写入数据。如果可用副本不足，生产者会受到 NotEnoughReplicasException。此配置配合生产者的 acks（需要接收到多少个同步副本的响应才算写入成功）配置能使消息的可靠性更好。
 
 
 
@@ -104,7 +104,7 @@ broker 返回的错误如果是可以通过重试解决的，生产者会自动�
 
 ### 配置验证
 
-Kafka 提供了两个用于验证配置的重要工具：org.apache.kafka.tools 包内的 VerifiableProducer 和 VerifiableComsumer 两个类，可以从命令行运行两个类或嵌入自动化测试框架。
+Kafka 提供了两个用于验证配置的重要工具：org.apache.kafka.tools 包内的 VerifiableProducer 和 VerifiableConsumer 两个类，可以从命令行运行两个类或嵌入自动化测试框架。
 
 使用和生产者、消费者相同的方式来配置 VerifiableProducer 和 VerifiableComsumer，VerifiableProducer 生成一系列消息，通过 VerifiableComsumer 检查每个消息。可以在首领选举、控制器选举、依次重启、不完全首领选举测试等场景测试系统的可靠性。
 
