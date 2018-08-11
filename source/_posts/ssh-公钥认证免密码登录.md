@@ -2,7 +2,7 @@
 title: ssh 公钥认证免密码登录
 date: 2016-12-29 11:13:28
 tags:
-- ssh
+- Linux
 categories:
 - Tech
 ---
