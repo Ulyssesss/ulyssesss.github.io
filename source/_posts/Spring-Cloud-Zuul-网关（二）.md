@@ -43,7 +43,7 @@ Spring Cloud Zuul 中的过滤器包含以下 4 个基本特征：
 
 外部 HTTP 请求到达网关直到返回请求结果的整个生命周期如图：
 
-![生命周期](http://ofu79o924.bkt.clouddn.com/201804201.png)
+![生命周期](http://image.ulyssesss.com/201804201.png)
 
 请求到达网关时首先被 pre 类型的过滤器处理，主要目的是在请求路由前做一些请求校验等前置加工。
 
