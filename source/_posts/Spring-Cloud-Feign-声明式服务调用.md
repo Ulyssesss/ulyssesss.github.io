@@ -295,7 +295,7 @@ public class FeignConsumerController {
 
 ## Ribbon 及 Hystrix 配置
 
-Spring Cloud Feign 的客户端负载均衡通过 Spring Cloud Ribbon 实现，通过配置 Ribbon 可以定义客户端调用参数。Riibon 和 Hystrix 的配置如下：
+Spring Cloud Feign 的客户端负载均衡通过 Spring Cloud Ribbon 实现，通过配置 Ribbon 可以定义客户端调用参数。Ribbon 和 Hystrix 的配置如下：
 
 ```properties
 spring.application.name=feign-consumer
