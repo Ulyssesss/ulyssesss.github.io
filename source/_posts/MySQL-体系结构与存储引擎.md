@@ -246,7 +246,7 @@ binlog 即二进制日志文件，用于备份恢复和主从复制，通过 syn
 
 
 
-####change buffer
+#### change buffer
 
 IO 对数据库性能的影响最大，change buffer 将 DML 操作从随机 IO 变成了顺序 IO，提高 IO 效率。change buffer 先判断 DML 的普通索引页是否在缓冲池中，如果在就直接执行，否则就先放入 change buffer 中，进行索引合并，将多个 DML 合并到一个操作中。
 
