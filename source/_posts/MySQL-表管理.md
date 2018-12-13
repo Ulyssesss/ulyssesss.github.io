@@ -49,7 +49,7 @@ datetime 和 timestamp 在 5.6 之后均支持自动更新为当前时间 ON UPD
 
 ## 字符串类型
 
-字符串类型包含 char、varchar、tinyblob、tingytext、blob、text、mediumblob、mediumtext、longblob 和 longtext。
+字符串类型包含 char、varchar、tinyblob、tinytext、blob、text、mediumblob、mediumtext、longblob 和 longtext。
 
 * char 用于定长字符串，最多可容纳 255 个字符，没达到定义位数时尾部用空格不全存入表中，超过时截断。
 * varchar 用于变长字符串，最多占 65535 个字节，没达到定义位数不会补空格，超过时截断。
