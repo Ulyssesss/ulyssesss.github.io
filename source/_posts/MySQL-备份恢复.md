@@ -62,6 +62,14 @@ mysqldump 为 MySQL 自带的命令工具，是最基础的备份工具。备份
 
 备份所有数据库。
 
+* --master-data
+
+在备份出的文件中添加 change master 语句（用于主从复制），该参数包含 1 和 2 两个值，1 时 change master 语句正常，2 时会将 change master 语句注释掉。
+
+* --dump-slave
+
+用于在搭建新从库，在库备份数据，1 时 change master 语句正常，2 时将 change master 语句注释掉。
+
 * --no-create-info（-t）
 
 只备份表数据，不备份表结构。
