@@ -282,7 +282,7 @@ MySQL 有网络连接和本地连接两种连接方式，mysql.sock 文件是服
 
 ## undo log
 
-对记录的更新操作不仅会产生 redo 记录，也不产生 undo 记录，undo log 记录变更前的旧数据。默认记录在系统表空间 ibdata1 中，从 MySQL 5.6 开始可以使用独立 undo 表空间，避免将 ibdata1 文件弄大，也给部署不同 IO 类型的文件位置带来便利。
+对记录的更新操作不仅会产生 redo 记录，也会产生 undo 记录，undo log 记录变更前的旧数据。默认记录在系统表空间 ibdata1 中，从 MySQL 5.6 开始可以使用独立 undo 表空间，避免将 ibdata1 文件弄大，也给部署不同 IO 类型的文件位置带来便利。
 
 
 
