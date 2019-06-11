@@ -79,9 +79,7 @@ theme: yilia
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: 
-    github: git@github.com:Ulyssesss/ulyssesss.github.io.git
-    coding: git@git.dev.tencent.com:ulyssessss/hexo-blog.git
+  repo: git@github.com:Ulyssesss/ulyssesss.github.io.git
   branch: master
 
 jsonContent:
