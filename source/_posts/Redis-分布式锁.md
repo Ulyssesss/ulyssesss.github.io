@@ -2,7 +2,7 @@
 title: Redis 分布式锁
 date: 2019-08-19 16:57:48
 tags:
-  - Design Pattern
+  - Redis
   - Distributed
 categories:
   - Tech
