@@ -88,7 +88,7 @@ deploy:
 search:
   path: search.xml
   field: post
-  format: html
+  format: html  
 
 jsonContent:
     meta: false
