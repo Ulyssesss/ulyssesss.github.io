@@ -82,6 +82,7 @@ deploy:
   branch: master
   repo: 
     github: git@github.com:Ulyssesss/ulyssesss.github.io.git
+    coding: git@e.coding.net:ulyssesss/ulyssesss.coding.me/ulyssesss.coding.me.git
 
 # hexo-generator-searchdb
 search:
