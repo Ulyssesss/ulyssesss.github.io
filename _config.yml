@@ -79,10 +79,9 @@ theme: ayer
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
+  branch: master
   repo: 
     github: git@github.com:Ulyssesss/ulyssesss.github.io.git
-    coding: git@git.dev.tencent.com:ulyssessss/hexo-blog.git
-  branch: master
 
 # hexo-generator-searchdb
 search:
