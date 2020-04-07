@@ -4,7 +4,7 @@ date: 2018-03-28 16:07:47
 tags:
 - JVM
 categories:
-- Tech
+- 技术
 ---
 ## 对象存活算法
 

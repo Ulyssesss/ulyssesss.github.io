@@ -4,7 +4,7 @@ date: 2019-08-20 18:14:08
 tags:
   - Redis
 categories:
-  - Tech
+  - 技术
 ---
 
 Redis 可用作轻量级的消息队列，使用简单。

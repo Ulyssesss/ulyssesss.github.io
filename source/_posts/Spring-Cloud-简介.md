@@ -4,7 +4,7 @@ date: 2018-03-10 11:22:46
 tags:
 - Spring Cloud
 categories:
-- Tech
+- 技术
 ---
 
 Spring Cloud 是一些列框架的集合，基于 Spring Boot，是实现微服务的一整套解决方案。

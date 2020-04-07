@@ -4,7 +4,7 @@ date: 2018-06-06 10:59:06
 tags:
 - Kafka
 categories:
-- Tech
+- 技术
 ---
 
 Kafka 是使用 Java 开发的应用程序，可以在安装了 Java 环境的多种操作系统上运行。另外 Kafka 使用 ZooKeeper 保存 broker 的元数据。

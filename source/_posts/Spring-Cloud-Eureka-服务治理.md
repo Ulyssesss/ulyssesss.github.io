@@ -4,7 +4,7 @@ date: 2018-03-20 18:03:19
 tags:
 - Spring Cloud
 categories:
-- Tech
+- 技术
 ---
 
 Spring Cloud Eureka 是对 Netflix Eureka 的二次封装，增加了 Spring Boot 风格的自动化配置，只需简单地引入依赖和注解就能提供完整的服务注册和服务发现。

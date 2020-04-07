@@ -3,7 +3,7 @@ title: MySQL 表管理
 tags:
   - MySQL
 categories:
-  - Tech
+  - 技术
 date: 2018-12-11 17:02:32
 ---
 

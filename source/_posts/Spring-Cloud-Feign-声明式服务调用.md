@@ -4,7 +4,7 @@ date: 2018-04-13 09:40:44
 tags:
 - Spring Cloud
 categories:
-- Tech
+- 技术
 ---
 
 在微服务的实践过程中，Spring Cloud Ribbon 和 Spring Cloud Hystrix 通常一起使用。

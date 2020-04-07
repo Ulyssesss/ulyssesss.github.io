@@ -3,7 +3,7 @@ title: Java 内部类
 tags:
   - Java
 categories:
-  - Tech
+  - 技术
 date: 2017-06-08 11:26:41
 ---
 

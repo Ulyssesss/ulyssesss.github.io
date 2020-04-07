@@ -4,7 +4,7 @@ date: 2018-04-23 12:17:11
 tags:
 - Spring Cloud
 categories:
-- Tech
+- 技术
 ---
 
 Spring Cloud Config 用于为分布式系统中的基础设施和微服务应用提供集中化的外部配置支持，分为服务端和客户端。

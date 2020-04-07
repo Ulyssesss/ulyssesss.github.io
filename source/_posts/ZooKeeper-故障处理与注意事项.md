@@ -4,7 +4,7 @@ date: 2018-05-04 20:53:27
 tags:
 - ZooKeeper
 categories:
-- Tech
+- 技术
 ---
 
 为了有效使用 ZooKeeper，需要了解 ZooKeeper 可能发生的故障种类及处理方式。

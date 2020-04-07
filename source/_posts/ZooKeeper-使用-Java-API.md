@@ -4,7 +4,7 @@ date: 2018-05-03 14:57:39
 tags:
 - ZooKeeper
 categories:
-- Tech
+- 技术
 ---
 
 zkCli 工具适用于调试，不推荐使用 zkCli 工具来搭建系统。

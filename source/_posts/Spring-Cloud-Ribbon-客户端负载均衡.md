@@ -4,7 +4,7 @@ date: 2018-03-21 16:09:44
 tags:
 - Spring Cloud
 categories:
-- Tech
+- 技术
 ---
 
 Spring Cloud Ribbon 是基于 Netflix Ribbon 实现的客户端负载均衡工具。

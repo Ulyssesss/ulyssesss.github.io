@@ -4,7 +4,7 @@ date: 2018-06-05 15:25:33
 tags:
 - Kafka
 categories:
-- Tech
+- 技术
 ---
 
 Kafka 最初是 LinkedIn 的一个内部基础组件，用于处理持续的数据流，之后开源成为 Apache 项目。

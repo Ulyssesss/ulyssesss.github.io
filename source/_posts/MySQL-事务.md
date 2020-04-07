@@ -4,7 +4,7 @@ date: 2018-12-19 15:17:40
 tags:
   - MySQL
 categories:
-  - Tech
+  - 技术
 ---
 
 事务是一组 DML（insert、delete、update）语句的集合，一个事务中的语句要么全部执行要么全部不执行。

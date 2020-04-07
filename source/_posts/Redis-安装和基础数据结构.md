@@ -4,7 +4,7 @@ date: 2019-08-16 11:12:00
 tags:
   - Redis
 categories:
-  - Tech
+  - 技术
 ---
 
 Redis 包含 5 中基础数据结构，分别为字符串 string 、列表 list 、字典 hash 、集合 set 和有序集合 zset 。

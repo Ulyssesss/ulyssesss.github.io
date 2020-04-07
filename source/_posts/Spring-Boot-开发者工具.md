@@ -5,7 +5,7 @@ tags:
 - Spring
 - Spring Boot
 categories:
-- Tech
+- 技术
 ---
 Spring Boot 自 1.3 版本起包含一组开发者工具，其中的 **自动重启** 和 **LiveReload 支持** 可以让开发过程更加便捷。
 

@@ -4,7 +4,7 @@ date: 2018-04-17 16:19:26
 tags:
 - Spring Cloud
 categories:
-- Tech
+- 技术
 ---
 
 利用之前提到的微服务组件，已经可以建立起一个简单的微服务系统：

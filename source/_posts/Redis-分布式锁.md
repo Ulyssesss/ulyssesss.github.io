@@ -3,9 +3,9 @@ title: Redis 分布式锁
 date: 2019-08-19 16:57:48
 tags:
   - Redis
-  - Distributed
+  - 分布式
 categories:
-  - Tech
+  - 技术
 ---
 
 分布式应用进行逻辑处理需要考虑并发问题。

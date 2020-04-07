@@ -4,7 +4,7 @@ date: 2018-04-20 16:02:09
 tags:
 - Spring Cloud
 categories:
-- Tech
+- 技术
 ---
 
 上篇文章 [Spring Cloud Zuul 网关（一）](http://blog.ulyssesss.com/2018/04/17/Spring-Cloud-Zuul-%E7%BD%91%E5%85%B3%EF%BC%88%E4%B8%80%EF%BC%89/) 介绍了 Spring Cloud Zuul 的基本使用方法，本篇文章会对 Zuul 的过滤器机制、hystrix 及 ribbon 支持做进一步介绍。

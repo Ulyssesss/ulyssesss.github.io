@@ -4,7 +4,7 @@ date: 2018-06-07 11:46:47
 tags:
 - Kafka
 categories:
-- Tech
+- 技术
 ---
 
 不管把 Kafka 用作消息队列还是数据存储平台，总需要向 Kafka 写入消息的生产者和从 Kafka 读取消息的消费者。

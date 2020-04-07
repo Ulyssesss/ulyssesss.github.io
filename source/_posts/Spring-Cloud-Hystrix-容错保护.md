@@ -4,7 +4,7 @@ date: 2018-04-09 09:56:14
 tags:
 - Spring Cloud
 categories:
-- Tech
+- 技术
 ---
 
 在微服务架构中，系统被拆分成很多个服务单元，各个服务单元的应用通过 HTTP 相互调用、依赖。

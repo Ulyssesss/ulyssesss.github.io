@@ -4,7 +4,7 @@ date: 2018-10-18 15:29:57
 tags:
   - MySQL
 categories:
-  - Tech
+  - 技术
 ---
 
 了解 MySQL 的体系结构可以帮助我们更好的学习 MySQL，本篇文章对 MySQL 体系结构进行了简要介绍，同时对 InnoDB 存储引擎的工作方式进行了说明。

@@ -4,7 +4,7 @@ date: 2018-07-25 11:31:12
 tags:
 - Kafka
 categories:
-- Tech
+- 技术
 ---
 
 Kafka 提供了一些用于管理集群变更的命令行工具，这些工具由 Java 实现，Kafka 提供一些脚本来调用这些 Java 类。这些工具只提供一些基本的功能，无法完成复杂操作。Kafka 社区有很多高级工具，如 Kafka Manager。

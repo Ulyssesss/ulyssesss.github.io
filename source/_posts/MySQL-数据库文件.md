@@ -3,7 +3,7 @@ title: MySQL 数据库文件
 tags:
   - MySQL
 categories:
-  - Tech
+  - 技术
 date: 2018-12-03 21:29:36
 ---
 

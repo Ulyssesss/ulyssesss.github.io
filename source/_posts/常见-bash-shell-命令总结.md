@@ -4,7 +4,7 @@ date: 2016-09-30 16:08:45
 tags:
 - Linux
 categories:
-- Tech
+- 技术
 ---
 
 本篇文章整理了常见的 bash shell 命令，其中包括 man、cd、pwd、ls、touch、cp、ln、mv、rm、mkdir、rmdir、file、cat、more、less、tail、head、ps、top、kill、mount、umount、df、du、sort、grep、gzip 及 tar。

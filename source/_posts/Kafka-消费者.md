@@ -4,7 +4,7 @@ date: 2018-07-20 19:23:02
 tags:
 - Kafka
 categories:
-- Tech
+- 技术
 ---
 
 应用程序使用 KafkaConsumer 向 Kafka 订阅主题，并从订阅的主题上接收消息。Kafka 的消费者涉及一些独特的概念，本篇文章首先解析一些重要概念，然后介绍如何读取消息及相关配置。

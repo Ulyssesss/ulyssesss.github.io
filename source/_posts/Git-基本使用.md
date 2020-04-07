@@ -4,7 +4,7 @@ date: 2016-10-30 14:22:14
 tags:
 - Git
 categories:
-- Tech
+- 技术
 ---
 * 配置用户名和email地址  
 
@@ -109,7 +109,7 @@ categories:
 
   `$ git merge <name>`
 
-  ​
+  
 
 * 删除 \<name\> 分支   
 

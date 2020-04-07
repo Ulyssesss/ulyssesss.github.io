@@ -4,7 +4,7 @@ date: 2017-04-17 00:16:09
 tags:
 - Markdown
 categories:
-- Tech
+- 技术
 ---
 ## 主要内容
 

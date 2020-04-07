@@ -4,7 +4,7 @@ date: 2018-05-04 14:52:03
 tags:
 - ZooKeeper
 categories:
-- Tech
+- 技术
 ---
 
 应用程序需要知道 ZooKeeper 节点状态的情况很常见，如主从模式中从节点需要知道主节点是否崩溃。

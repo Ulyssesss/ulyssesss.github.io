@@ -4,7 +4,7 @@ date: 2016-12-29 11:13:28
 tags:
 - Linux
 categories:
-- Tech
+- 技术
 ---
 * **ssh 公钥认证**是 ssh 的认证方式之一，通过公钥认证可以实现 **ssh 免密码登录**。
 
