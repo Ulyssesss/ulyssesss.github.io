@@ -116,63 +116,6 @@
     
     
     <article
-  id="post-设计模式之桥接模式"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2019/06/13/设计模式之桥接模式/"
-    >设计模式之桥接模式</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2019/06/13/设计模式之桥接模式/" class="article-date">
-  <time datetime="2019-06-13T03:55:31.000Z" itemprop="datePublished">2019-06-13</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/技术/">技术</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <p>桥接模式（Bridge），将抽象部分与它的实现部分分离，使它们都可以独立的变化，属于结构型模式。</p>
-<p>桥接模式中，实现的系统有多个角度的分类，每种分类都有可能变化，将继承关系转换为关联关系，让各种变化分离出来，使它们独立变化，减少各种变化之间的耦合。</p> 
-      <a class="article-more-link" href="/2019/06/13/设计模式之桥接模式/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/设计模式/">设计模式</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-    
-</article>
-
-    
-    <article
   id="post-设计模式之策略模式"
   class="article article-type-post"
   itemscope
@@ -200,19 +143,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>策略模式（Strategy），定义算法家族，分别封装，算法之间可以相互替换，算法的变化不影响使用算法的客户端，属于行为型模式。</p>
-<p>在策略模式中，由客户端自己决定在什么情况下使用什么具体策略角色。</p> 
-      <a class="article-more-link" href="/2019/06/11/设计模式之策略模式/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -257,19 +188,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>主从复制也称为主从同步，将一台主机的数据复制到另一台或多台主机上，通过中继日志 relay log 来实现复制功能，是构建数据库高可用集群架构的基础。</p>
-<p>复制过程中一台服务器充当主库 master，其余一个或多个服务器充当从库 slave。</p> 
-      <a class="article-more-link" href="/2019/01/03/MySQL-主从复制/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -314,18 +233,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>MySQL 的备份方式按备份后的内容可分为全量备份和增量备份，按服务的运行状态可以分为冷备（停库）和热备（非停库），其中热备又可分为逻辑备份和裸文件备份。</p> 
-      <a class="article-more-link" href="/2019/01/02/MySQL-备份恢复/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -370,20 +278,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>锁是一种使各种共享资源在被并发访问时变得有序，从而保证数据一致性的机制。</p>
-<p>MySQL 中不同存储引擎支持不同的锁机制，InnoDB 支持行锁、表锁，MyISAM 只支持表锁。</p>
-<p>表锁开销小、加锁快，不会出现死锁，但锁冲突概率大，并发度低；而行锁开销大、加锁慢，会出现死锁，但锁冲突概率小，并发度高。</p> 
-      <a class="article-more-link" href="/2018/12/20/MySQL-锁/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -428,23 +323,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>事务是一组 DML（insert、delete、update）语句的集合，一个事务中的语句要么全部执行要么全部不执行。</p>
-<blockquote>
-<p>SQL 语句分为四类：数据查询语言 DQL（select），数据操纵语言 DML（insert、delete、update），数据定义语言DDL（create）和数据控制语言 DCL（grant、rollback、commit）。</p>
-</blockquote>
-<p>MySQL 中 InnoDB 支持事务而 MyISAM 不支持，事务默认自动提交，即除非显式地开始一个事务，否则每个 DML 语句都被当做一个单独的事务自动执行。</p>
-<p>显示开启事务以 begin 命令开始，以 commit 或 rollback 命令结束。</p> 
-      <a class="article-more-link" href="/2018/12/19/MySQL-事务/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -489,19 +368,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>索引是对数据库表中一列或多列的值进行排序的一种结构，使用索引可以快速访问数据库表中的特定信息。索引就像书的目录，通过目录可以快速搜索到想要查找的内容。</p>
-<p>MySQL 中索引可以分为 B+tree 索引和哈希索引，B+tree 索引又可以分为聚集索引和普通索引。</p> 
-      <a class="article-more-link" href="/2018/12/17/MySQL-索引/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -546,18 +413,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>MySQL 其实就是一个包含很多表的集合，表中主要的数据类型可以分为整型、浮点型、字符类型和日期时间类型。MySQL 中数值类型可以指定是否区分正负和用零填补。选择数据类型时应符合最小、最合适的原则。</p> 
-      <a class="article-more-link" href="/2018/12/11/MySQL-表管理/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -602,18 +458,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>本篇文章介绍 MySQL 中各种类型的文件，包含配置文件 my.conf、错误日志 error.log、慢查询日志 slow log、全量日志 general log、二进制日志 binlog、审计日志 audit log、套接字文件 socket、进程文件 pid ，及存储引擎层面的 redo log 和 undo log。</p> 
-      <a class="article-more-link" href="/2018/12/03/MySQL-数据库文件/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -658,18 +503,52 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>了解 MySQL 的体系结构可以帮助我们更好的学习 MySQL，本篇文章对 MySQL 体系结构进行了简要介绍，同时对 InnoDB 存储引擎的工作方式进行了说明。</p> 
-      <a class="article-more-link" href="/2018/10/18/MySQL-体系结构与存储引擎/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
+
+    <!-- copyright -->
     
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-MySQL-5-7-二进制软件包安装方法"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/10/17/MySQL-5-7-二进制软件包安装方法/"
+    >MySQL 5.7 二进制软件包安装方法</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2018/10/17/MySQL-5-7-二进制软件包安装方法/" class="article-date">
+  <time datetime="2018-10-17T08:23:41.000Z" itemprop="datePublished">2018-10-17</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技术/">技术</a>
+  </div>
+   
+    </div>
+       
 
     <!-- copyright -->
     

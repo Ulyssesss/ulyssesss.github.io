@@ -116,64 +116,6 @@
     
     
     <article
-  id="post-JVM-GC-与-内存分配策略"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2018/03/28/JVM-GC-与-内存分配策略/"
-    >JVM GC 与 内存分配策略</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2018/03/28/JVM-GC-与-内存分配策略/" class="article-date">
-  <time datetime="2018-03-28T08:07:47.000Z" itemprop="datePublished">2018-03-28</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/技术/">技术</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h2 id="对象存活算法"><a href="#对象存活算法" class="headerlink" title="对象存活算法"></a>对象存活算法</h2><p>Java 堆中存放着几乎所有的对象实例，垃圾收集器在对堆进行回收前，需要确定对象是否存活。</p>
-<h3 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h3><p>给对象添加一个引用计数器，每当一个地方引用它时，计数器的值加 1；引用失效时减 1。</p>
-<p>主流 JVM 没有选用此种算法管理内存，主要原因是它难以解决对象间循环引用的问题。</p> 
-      <a class="article-more-link" href="/2018/03/28/JVM-GC-与-内存分配策略/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-    
-</article>
-
-    
-    <article
   id="post-JVM-内存区域"
   class="article article-type-post"
   itemscope
@@ -201,25 +143,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>JVM 在执行 Java 程序的过程中会把它所管理的内存划分为如下几个数据区域：</p>
-<ul>
-<li>程序计数器</li>
-<li>虚拟机栈</li>
-<li>本地方法栈 </li>
-<li>堆</li>
-<li>方法区</li>
-</ul> 
-      <a class="article-more-link" href="/2018/03/27/JVM-内存区域/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -264,20 +188,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>Spring Cloud Ribbon 是基于 Netflix Ribbon 实现的客户端负载均衡工具。</p>
-<p>Spring Cloud Ribbon 在单独使用时，可以通过在客户端中配置 ribbonServerList 来指定服务实例列表，通过轮训访问的方式起到负载均衡的作用。</p>
-<p>在与 Eureka 联合使用时，ribbonServerList 会被重写，改为通过 Eureka 服务注册中心获取服务实例列表，可以通过简单的几行配置完成 Spring Cloud 中服务调用的负载均衡。</p> 
-      <a class="article-more-link" href="/2018/03/21/Spring-Cloud-Ribbon-客户端负载均衡/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -322,18 +233,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>Spring Cloud Eureka 是对 Netflix Eureka 的二次封装，增加了 Spring Boot 风格的自动化配置，只需简单地引入依赖和注解就能提供完整的服务注册和服务发现。</p> 
-      <a class="article-more-link" href="/2018/03/20/Spring-Cloud-Eureka-服务治理/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -378,19 +278,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>Spring Cloud 是一些列框架的集合，基于 Spring Boot，是实现微服务的一整套解决方案。</p>
-<p>Spring Cloud 为微服务中涉及的配置管理、服务治理、负载均衡、断路器、消息总线、数据监控等提供了一种简单的开发方式，降低了构建大型系统的要求，能以较低的成本搭建出一套高效、分布式、容错的平台。</p> 
-      <a class="article-more-link" href="/2018/03/10/Spring-Cloud-简介/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -435,21 +323,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>Spring Boot 自 1.3 版本起包含一组开发者工具，其中的 <strong>自动重启</strong> 和 <strong>LiveReload 支持</strong> 可以让开发过程更加便捷。</p>
-<p>使用前需向工程中添加开发者工具，如 maven：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line"> 	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>  程序以完整打包好的 JAR 或 WAR 文件形式运行时，开发者工具会被禁用，无需在生产部署前移除依赖。</p> 
-      <a class="article-more-link" href="/2017/10/17/Spring-Boot-开发者工具/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -494,18 +368,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>实现方法时，选择不同的数据结构会使实现风格和性能有很大的差异。本篇文章讲述如何使用 Java 标准库中的集合类。</p> 
-      <a class="article-more-link" href="/2017/07/05/Java-集合概述/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -550,19 +413,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>操作系统拥有在同一刻运行多个程序的能力，并发执行的进程数不受 CPU 数目制约，系统将 CPU 的时间片分配给每个进程，给人并行处理的感觉。</p>
-<p>而多线程扩展了多任务的概念，即一个程序同时执行多个任务（线程）。每个进程拥有自己的一套变量，而线程则共享数据。本篇文章将从线程、同步、执行器等多方面介绍 Java 并发。</p> 
-      <a class="article-more-link" href="/2017/07/02/Java-并发概述/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -607,18 +458,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>内部类，即定义在另一个类中的类。</p> 
-      <a class="article-more-link" href="/2017/06/08/Java-内部类/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -663,25 +503,58 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p><strong>Singleton</strong> 指仅仅被 <strong>实例化一次</strong> 的类，通常被用来代表本质上唯一的系统组件，如窗口管理器或文件系统。</p>
-<p>使类称为 Singleton 会使它的客户端测试变得困难，因为无法给 Singleton 替换模拟实现。除非它实现一个充当其类型的接口。</p> 
-      <a class="article-more-link" href="/2017/05/03/枚举类型强化-Singleton-属性/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
     <footer class="article-footer">
        
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-Markdown-简明教程"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2017/04/17/Markdown-简明教程/"
+    >Markdown 简明教程</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2017/04/17/Markdown-简明教程/" class="article-date">
+  <time datetime="2017-04-16T16:16:09.000Z" itemprop="datePublished">2017-04-17</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技术/">技术</a>
+  </div>
+   
+    </div>
+       
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Markdown/">Markdown</a></li></ul>
 
     </footer>
   </div>

@@ -116,64 +116,6 @@
     
     
     <article
-  id="post-ZooKeeper-监视点详解"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2018/05/04/ZooKeeper-监视点详解/"
-    >ZooKeeper 监视点详解</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2018/05/04/ZooKeeper-监视点详解/" class="article-date">
-  <time datetime="2018-05-04T06:52:03.000Z" itemprop="datePublished">2018-05-04</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/技术/">技术</a>
-  </div>
-   
-    </div>
-      
-    <div class="article-entry" itemprop="articleBody">
-       
-  <p>应用程序需要知道 ZooKeeper 节点状态的情况很常见，如主从模式中从节点需要知道主节点是否崩溃。</p>
-<p>轮训的方式很低效，尤其是在期望变化频率很低时。</p>
-<p>ZooKeeper 提供了监视点（watch）这一处理节点变化的重要机制，客户端对指定 znode 节点注册通知请求，在节点状态发生变化时就会收到一个单次的通知。</p> 
-      <a class="article-more-link" href="/2018/05/04/ZooKeeper-监视点详解/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ZooKeeper/">ZooKeeper</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-    
-</article>
-
-    
-    <article
   id="post-ZooKeeper-使用-Java-API"
   class="article article-type-post"
   itemscope
@@ -201,20 +143,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>zkCli 工具适用于调试，不推荐使用 zkCli 工具来搭建系统。</p>
-<p>实际开发时一般也不直接使用 ZooKeeper 的 Java API，而是使用更高层次的封装库 Curator，不过对 Java API 的学习仍然有很多益处。</p>
-<p>本篇文章介绍通过 ZooKeeper 的 Java API 来实现创建会话、实现监视点等功能，演示主从模式。</p> 
-      <a class="article-more-link" href="/2018/05/03/ZooKeeper-使用-Java-API/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -259,19 +188,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>信息飞速膨胀，很多应用无法依赖单个服务器处理庞大的数据量。由于分布式系统和应用可以提供更强的计算能力，还能更好地容灾和扩展，所以逐渐受到青睐。</p>
-<p>在开发分布式应用时，通常需要花费大量时间和精力来处理异构系统中的协作通信问题。</p> 
-      <a class="article-more-link" href="/2018/05/02/ZooKeeper-概念与基础/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -316,21 +233,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>Spring Cloud Config 用于为分布式系统中的基础设施和微服务应用提供集中化的外部配置支持，分为服务端和客户端。</p>
-<p>服务端为分布式配置中心，是一个独立的微服务应用；客户端为分布式系统中的基础设置或微服务应用，通过指定配置中心来管理相关的配置。</p>
-<p>Spring Cloud Config 构建的配置中心，除了适用于 Spring 构建的应用外，也可以在任何其他语言构建的应用中使用。</p>
-<p>Spring Cloud Config 默认采用 Git 存储配置信息，天然支持对配置信息的版本管理。</p> 
-      <a class="article-more-link" href="/2018/04/23/Spring-Cloud-Config-配置中心/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -375,18 +278,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>上篇文章 <a href="http://blog.ulyssesss.com/2018/04/17/Spring-Cloud-Zuul-%E7%BD%91%E5%85%B3%EF%BC%88%E4%B8%80%EF%BC%89/">Spring Cloud Zuul 网关（一）</a> 介绍了 Spring Cloud Zuul 的基本使用方法，本篇文章会对 Zuul 的过滤器机制、hystrix 及 ribbon 支持做进一步介绍。</p> 
-      <a class="article-more-link" href="/2018/04/20/Spring-Cloud-Zuul-网关（二）/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -431,23 +323,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>利用之前提到的微服务组件，已经可以建立起一个简单的微服务系统：</p>
-<ul>
-<li>通过 Spring Cloud Eureka 实现高可用服务注册中心</li>
-<li>通过 Spring Cloud Ribbon 或 Feign 实现服务间负载均衡的接口调用</li>
-<li>通过 Spring Cloud Hystrix 实现线程隔离和熔断，防止故障扩散</li>
-</ul> 
-      <a class="article-more-link" href="/2018/04/17/Spring-Cloud-Zuul-网关（一）/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -492,19 +368,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>在微服务的实践过程中，Spring Cloud Ribbon 和 Spring Cloud Hystrix 通常一起使用。</p>
-<p>Spring Cloud Feign 是对这两个基础工具的更高层次封装，在 Netflix Feign 的基础上扩展了对 Spring MVC 的注解支持，提供了一种声明式的 Web 服务客户端定义方式。</p> 
-      <a class="article-more-link" href="/2018/04/13/Spring-Cloud-Feign-声明式服务调用/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -549,24 +413,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p><a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> 是一款基于 Node.js 的静态博客框架，支持 Github Flavored Markdown 语法，可一键部署到 Github Pages。</p>
-<h2 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h2><p>安装 Hexo 前，需要检查是否已经安装下列应用:</p>
-<ul>
-<li>Node.js</li>
-<li>Git</li>
-</ul>
-<p>如已安装上述必备程序，通过 <code>sudo npm install -g hexo-cli</code> 安装Hexo。</p> 
-      <a class="article-more-link" href="/2018/04/09/Hexo-Github-搭建博客/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -611,19 +458,7 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>在微服务架构中，系统被拆分成很多个服务单元，各个服务单元的应用通过 HTTP 相互调用、依赖。</p>
-<p>在某个服务由于网络或其他原因自身出现故障、延迟时，调用方也会出现延迟。若调用方请求不断增加，可能会形成任务积压，最终导致调用方服务瘫痪，服务不可用现象逐渐放大。</p> 
-      <a class="article-more-link" href="/2018/04/09/Spring-Cloud-Hystrix-容错保护/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
-    
 
     <!-- copyright -->
     
@@ -668,27 +503,52 @@
   </div>
    
     </div>
-      
-    <div class="article-entry" itemprop="articleBody">
        
-  <p>JDK 中包含一些命令行工具，这些工具能在处理应用程序性能问题、定位故障时发挥很大的作用。</p>
-<h2 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h2><p>JVM Process Status Tool，用于显示系统内所有的 HotSpot 虚拟机进程。</p>
-<p>jps 可以列出正在运行的 JVM 进程，显示 JVM 执行主类及进程的本地虚拟机唯一 ID（与操作系统进程 ID 一致）。</p>
-<p>常用选项：</p>
-<ul>
-<li>-q：只输出进程 ID，隐藏主类名称</li>
-<li>-m：输出进程启动时传递给主类 main() 函数的参数</li>
-<li>-l：输出主类全名，如进程执行的是 Jar 包，输出 Jar 路径</li>
-<li>-v：输出虚拟机进程启动时 JVM 参数</li>
-</ul> 
-      <a class="article-more-link" href="/2018/03/29/JVM-性能监控与故障处理工具/"
-        >阅读更多...</a
-      >
-       
-      <!-- reward -->
-      
-    </div>
+
+    <!-- copyright -->
     
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
+
+    </footer>
+  </div>
+
+    
+ 
+    
+</article>
+
+    
+    <article
+  id="post-JVM-GC-与-内存分配策略"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/03/28/JVM-GC-与-内存分配策略/"
+    >JVM GC 与 内存分配策略</a> 
+</h2>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2018/03/28/JVM-GC-与-内存分配策略/" class="article-date">
+  <time datetime="2018-03-28T08:07:47.000Z" itemprop="datePublished">2018-03-28</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技术/">技术</a>
+  </div>
+   
+    </div>
+       
 
     <!-- copyright -->
     

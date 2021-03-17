@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>2020 书单</title>
-    <url>/2020/01/06/2020%20%E4%B9%A6%E5%8D%95/</url>
-    <content><![CDATA[<a id="more"></a>
-<ul>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/26427528/" target="_blank" rel="noopener">运动饮食1︰9</a> —— <a href="https://book.douban.com/search/森拓郎" target="_blank" rel="noopener">（日）森拓郎</a></li>
-<li style="list-style: none"><input type="checkbox"> <a href="https://book.douban.com/subject/26834485/" target="_blank" rel="noopener">数据结构与算法经典问题解析</a> —— <a href="https://book.douban.com/search/纳拉辛哈·卡鲁曼希" target="_blank" rel="noopener">纳拉辛哈·卡鲁曼希</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/1139360/" target="_blank" rel="noopener">毛泽东选集 第一卷</a> —— <a href="https://book.douban.com/search/毛泽东" target="_blank" rel="noopener">毛泽东</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/20397289/" target="_blank" rel="noopener">没有一条道路是重复的</a> —— <a href="https://book.douban.com/author/4503668/" target="_blank" rel="noopener">余华</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/26359758/" target="_blank" rel="noopener">硬派健身</a> —— <a href="https://book.douban.com/author/287409/" target="_blank" rel="noopener">斌卡</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/25724948/" target="_blank" rel="noopener">黑客与画家</a> ——  <a href="https://book.douban.com/author/4566781/" target="_blank" rel="noopener">（美） 保罗·格雷厄姆</a></li>
-<li style="list-style: none"><input type="checkbox"> <a href="https://book.douban.com/subject/26745780/" target="_blank" rel="noopener">数据结构与算法分析</a> —— <a href="https://book.douban.com/search/韦斯" target="_blank" rel="noopener">韦斯 (Mark Allen Weiss)</a></li>
-<li style="list-style: none"><input type="checkbox"> <a href="https://book.douban.com/subject/25844633/" target="_blank" rel="noopener">实现领域驱动设计</a> —— <a href="https://book.douban.com/search/Vaughn Vernon" target="_blank" rel="noopener">Vaughn Vernon</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/30359587/" target="_blank" rel="noopener">科比自传</a> —— <a href="https://book.douban.com/author/1011346" target="_blank" rel="noopener">（美）科比·布莱恩特</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/30247013/" target="_blank" rel="noopener">自控力</a> —— <a href="https://book.douban.com/search/Kelly McGonigal" target="_blank" rel="noopener">Kelly McGonigal</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/10554308/" target="_blank" rel="noopener">白夜行</a> —— <a href="https://book.douban.com/search/东野圭吾" target="_blank" rel="noopener">（日）东野圭吾</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/27013716/" target="_blank" rel="noopener">沉默的大多数</a> —— <a href="https://book.douban.com/search/王小波" target="_blank" rel="noopener">王小波</a></li>
-<li style="list-style: none"><input type="checkbox"> <a href="https://book.douban.com/subject/10785583/" target="_blank" rel="noopener">思考快与慢</a> ——  <a href="https://book.douban.com/author/248090/" target="_blank" rel="noopener">（美） 丹尼尔·卡尼曼</a> / <a href="https://book.douban.com/author/1077789/" target="_blank" rel="noopener">（美） Daniel Kahneman</a></li>
-<li style="list-style: none"><input type="checkbox" checked> <a href="https://book.douban.com/subject/34820460/" target="_blank" rel="noopener">番茄工作法</a> —— （意）弗朗西斯科•西里洛</li>
-<li style="list-style: none"><input type="checkbox"> <a href="https://book.douban.com/subject/20485545/" target="_blank" rel="noopener">复盘+</a> —— <a href="https://book.douban.com/search/邱昭良" target="_blank" rel="noopener">邱昭良</a></li>
-<li style="list-style: none"><input type="checkbox"> <a href="https://book.douban.com/subject/3576486/" target="_blank" rel="noopener">小狗钱钱</a> —— <a href="https://book.douban.com/search/博多·舍费尔" target="_blank" rel="noopener">（德）博多·舍费尔</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-      <tags>
-        <tag>阅读</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Git 基本使用</title>
     <url>/2016/10/30/Git-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<ul>
@@ -1743,9 +1713,9 @@ _    下划线
 <p>通过 <code>spring.devtools.restart.exclude</code> 属性可以覆盖默认的重启排除目录，如 <code>spring.devtools.restart.exclude=/static/**, /templates/**</code>。</p>
 <p>通过 <code>spring.devtools.restart.enabled=false</code> 可以彻底关闭自动重启。</p>
 <p>需要注意的是，Intellij IDEA 默认关闭自动编辑功能，需在 <strong>preferences – Build, Execution, Deployment –Compiler</strong> 中打开自动编辑，如图</p>
-<p><img src="http://image.ulyssesss.com/201710171.png" alt="preferences"></p>
+<p><img src="https://blog.ulyssesss.com/assets/img/201710171.png" alt="preferences"></p>
 <p>然后按 <code>Shift + Command + Alt + /</code>，选择 <strong>Registry</strong>，勾选 <code>compiler.automake.allow.when.app.running</code>，如图</p>
-<p><img src="http://image.ulyssesss.com/201710172.png" alt="registry"></p>
+<p><img src="https://blog.ulyssesss.com/assets/img/201710172.png" alt="registry"></p>
 <p>设置完毕并重启后生效。</p>
 <h2 id="LiveReload"><a href="#LiveReload" class="headerlink" title="LiveReload"></a>LiveReload</h2><p>在 Web 应用开发过程中，比较常见的步骤包含：</p>
 <p>1.修改要呈现的内容，如image、css、template。</p>
@@ -3756,7 +3726,7 @@ _    下划线
 <p>四、将类组装起来并提供执行入口。</p>
 <hr>
 <p>本篇文章是在学习极客时间 - 设计模式之美课程后的总结。可以扫描文章尾部的二维码，到专栏进行系统学习。</p>
-<p><img src="http://image.ulyssesss.com/design-pattern.jpeg" alt="设计模式之美"></p>
+<p><img src="https://blog.ulyssesss.com/assets/img/design-pattern.jpeg" alt="设计模式之美"></p>
 ]]></content>
       <categories>
         <category>技术</category>
