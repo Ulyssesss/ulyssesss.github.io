@@ -38,13 +38,13 @@ Spring Boot 自 1.3 版本起包含一组开发者工具，其中的 **自动重
 
 需要注意的是，Intellij IDEA 默认关闭自动编辑功能，需在 **preferences -- Build, Execution, Deployment --Compiler** 中打开自动编辑，如图
 
-![preferences](http://image.ulyssesss.com/201710171.png)
+![preferences](https://blog.ulyssesss.com/assets/img/201710171.png)
 
 
 
 然后按 `Shift + Command + Alt + /`，选择 **Registry**，勾选 `compiler.automake.allow.when.app.running`，如图
 
-![registry](http://image.ulyssesss.com/201710172.png)
+![registry](https://blog.ulyssesss.com/assets/img/201710172.png)
 
 设置完毕并重启后生效。
 
