@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    图（未完） |  
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/dist/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-图"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  图（未完）
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2016/07/25/图/" class="article-date">
+  <time datetime="2016-07-25T07:39:02.000Z" itemprop="datePublished">2016-07-25</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技术/">技术</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">7 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>图（Graph）是由顶点的有穷非空集合和顶点之间边的集合组成，通常表示为： G(V, E) ，其中 G 表示一个图，V 是图 G 中顶点的集合，E 是图 G 中边的集合。</p>
+<p>通常，在线性表中将数据元素称为元素，树中将数据元素称为结点，而图中，称为<strong>顶点（Vertex）</strong>。</p>
+<p>线性表和树中可以没有数据元素，称为空表和空树，但图中强调了顶点集合是<strong>非空</strong>的。</p>
+<p>图中任意两个顶点之间都可能有关系，顶点之间的逻辑关系用边表示，边集可以是空的。</p>
+<a id="more"></a>
+<h3 id="相关定义"><a href="#相关定义" class="headerlink" title="相关定义"></a>相关定义</h3><p><strong>无向边</strong>：若顶点 $v_i$ 到 $v_j$ 之间的边没有方向，则称这条边为无向边（Edge），用无序偶对 ($v_i, v_j$) 或 ($v_j, v_i$) 表示。</p>
+<p>若图中任意两个顶点之间的边都是无向边，则称该图为<strong>无向图（Undirected graphs）</strong>。</p>
+<p><strong>有向边</strong>：若顶点 $v_i$ 到 $v_j$ 之间的边有方向，则称这条边为有向边，也称为<strong>弧（Arc）</strong>，用有序偶对 &lt;$v_i, v_j$&gt; 来表示，其中 $v_i$ 称为弧尾（Tail），$v_j$ 称为弧头（Head）。</p>
+<p>若图中任意两个顶点之间的边都是有向边，则称该图为<strong>有向图（Directed graphs）</strong>。</p>
+<p>在图中，若不存在顶点到其自身的边，且同一条边不重复出现，责成这样的图为<strong>简单图</strong>。</p>
+<p>在无向图中，如果任意两个顶点之间都存在边，则称该图为<strong>无向完全图</strong>。含 n 个顶点的无向完全图有 n * (n - 1) / 2 条边。</p>
+<p>在有向图中，如果任意两个顶点之间都存在方向相反的两条弧，则称该图为<strong>有向完全图</strong>。含 n 个顶点的有向完全图有 n * (n - 1) 条边。</p>
+<p>有很少条边或弧的图称为<strong>稀疏图</strong>，反之称为<strong>稠密图</strong>。</p>
+<p>与图的边或弧相关的数叫做<strong>权（Weight）</strong>，带权的图称为<strong>网（Network）</strong>。</p>
+<p>假设有两个图 $G_1$ = ($V_1$, {$E_1$}) 和 $G_2$ = ($V_2$, {$E_2$}) ，如果 $V_2 \subseteq V_1$ 且 $E_2 \subseteq E_1$ ，则称 $G_2$ 为 $G_1$ 的<strong>子图（Subgraph）</strong>。</p>
+<p>对于无向图 G = (V, {E}) ，如果边 ($v_1$, $v_2$) $\in$ E ，则称 顶点 $v_1$ 和 $v_2$ 互为<strong>邻接点（Adjacent）</strong>，即 $v_1$ 和 $v_2$ 相连。边 ($v_1$, $v_2$) 依附（incident）于顶点 $v_1$ 和 $v_2$ ，或 ($v_1$, $v_2$) 与顶点 $v_1$ 和 $v_2$ 相关联。顶点 v 的<strong>度（Degree）</strong>是和 v 相关联的边的数目，记为 TD(v)。</p>
+<p>对于有向图 G = (V, {E}) ，如果弧 &lt;$v_1$, $v_2$&gt; $\in$ E ，则称顶点 $v_1$ 邻接到 $v_2$ ，顶点 $v_2$ 邻接自 $v_1$ 。弧 &lt;$v_1$, $v_2$&gt; 和顶点 $v_1$ 、 $v_2$ 相关联。以顶点 v 为头的弧的数目称为 v 的<strong>入度（InDegree）</strong>，记为 ID(v) ；以 v 为尾的弧的数目称为 v 的<strong>出度（OutDegree）</strong>，记为 OD(v) ；顶点 v 的度为 TD(v) = ID(v) + OD(v) 。</p>
+<p>路径的长度是路径上的边或弧的数目。</p>
+<p>第一个顶点和最后一个顶点相同的路径称为<strong>回路</strong>或<strong>环（Cycle）</strong>。序列中顶点不重复出现的路径称为<strong>简单路径</strong>。除第一个和最后一个顶点，其余顶点不重复出现的回路，称为<strong>简单回路</strong>或<strong>简单环</strong>。</p>
+<p>在无向图 G 中，如果从顶点 $v_1$ 到 $v_2$ 有路径，则称 $v_1$ 和 $v_2$ 是连通的。如果图中任意两个顶点都是连通的，则称该图为<strong>连通图（Connected Graph）</strong>。</p>
+<p>无向图中的极大连通子图称为<strong>连通分量</strong>。</p>
+<p>在有向图 G 中，如果对于每一对 $v_i 、 v_j \in V$  、$v_i \ne v_j$ ，从 $v_i$ 到 $v_j$ 和 从 $v_j$ 到 $v_i$ 都存在路径，则称 G 是<strong>强连通图</strong>。</p>
+<p>有向图中的极大强连通子图称作有向图的<strong>强连通分量</strong>。</p>
+<p><strong>连通图的生成树</strong>是一个极小的连通子图，含有图中全部的 n 的顶点，但只有足以构成一棵树的 n - 1 条边。</p>
+<p>如果一个有向图洽有一个顶点入度为 0 ，其余顶点入度均为 1 ，则是一棵有向树。一个有向图的生成森林由若干棵有向树组成，含图中全部顶点，但只有足以构成若干棵不相交的有向树的弧。</p>
+<h3 id="图的抽象数据类型"><a href="#图的抽象数据类型" class="headerlink" title="图的抽象数据类型"></a>图的抽象数据类型</h3><p>ADT ： 图（Graph）</p>
+<p>Data ：顶点的有穷非空集合和边的集合。</p>
+<p>Operation ：</p>
+<ul>
+<li>create（按顶点集合边集构造图）</li>
+<li>locateVertex（获取顶点位置）</li>
+<li>getVertex（获取顶点的值）</li>
+<li>putVertex（对顶点赋值）</li>
+<li>getFirstAdjVertex（获取顶点的第一个邻接点）</li>
+<li>getNextAdjVertex（获取顶点的下一个邻接点）</li>
+<li>insertVertex（插入新顶点）</li>
+<li>deleteVertex（删除顶点及相关的边或弧）</li>
+<li>insertArc（添加弧）</li>
+<li>deleteArc（删除弧）</li>
+<li>dfsTraversal（深度优先遍历）</li>
+<li>hfsTraversal（广度优先遍历）</li>
+</ul>
+<p>endADT</p>
+<h3 id="图的存储结构"><a href="#图的存储结构" class="headerlink" title="图的存储结构"></a>图的存储结构</h3><p>图的结构比较复杂，任意两个顶点之间都可能存在联系，所以无法以数据元素在内存中的物理位置来表示元素间的关系。而多重链表按最大度数顶点设计指针域，不仅存在空间浪费，结构不同造成的操作也很不方便。</p>
+<h4 id="邻接矩阵"><a href="#邻接矩阵" class="headerlink" title="邻接矩阵"></a>邻接矩阵</h4><p>图的邻接矩阵（Adjancency Matrix）存储方式是用两个数组表示图。一个一维数组存储图中顶点信息，一个二维数组（称为邻接矩阵）存储图中的边或弧的信息。</p>
+<p>邻接矩阵中用 1 表示存在边或弧，0 表示不存在边或弧。如图为网图，可以用权值大小作为邻接矩阵中的值，不存在的边或弧用无穷大表示（权值可能为 0）。</p>
+<h4 id="邻接表"><a href="#邻接表" class="headerlink" title="邻接表"></a>邻接表</h4><p>对于边数相对顶点较少的图，邻接矩阵会存在大量的空间浪费。</p>
+<p>数组与链表相结合的存储方法称为<strong>邻接表（Adjacency List）</strong> ：顶点用一个一维数组存储，每个数据元素需额外存储指向第一个邻接点的指针，<code>data|firstedge</code> ；每个顶点的所有邻接点构成一个链表，<code>adjvex|next</code> ，adjvex 存储邻接点在数组中的下标，next 指向下一个邻接点。</p>
+<p>若是有向图，邻接表结构类似，以顶点为<strong>弧尾</strong>存储边表。也可以建立有向图的逆邻接表，以顶点的弧头建立边表。</p>
+<p>对于网图，可以在边表结点中增加 weight 的数据域。</p>
+<h4 id="十字链表"><a href="#十字链表" class="headerlink" title="十字链表"></a>十字链表</h4><p>对于有限图，邻接表是有缺陷的，入度和出度只能关注其一。而<strong>十字链表</strong>就是邻接表和逆邻接表的结合。</p>
+<p>顶点表由数据域、入边表第一个结点指针和出边表第一个结点指针组成，如 <code>data|firstin|firstout</code> 。</p>
+<p>边表由弧起点在顶点表中下标、弧终点在顶点中下标、入边表指针域和出边表指针域组成，网可以增加权值域，如 <code>tailvex|headvex|headlink|taillink</code> 。</p>
+<h4 id="邻接多重表"><a href="#邻接多重表" class="headerlink" title="邻接多重表"></a>邻接多重表</h4><p>无向图的应用中，如果关注的是顶点，邻接表是不错的选择，但如果关注的是变，如删除一条边等操作，就需要对两个边表结点进行操作。</p>
+<p>对边表结点进行改造，改为由边的两个顶点在顶点表中的下标及已付两个顶点的下一条边组成，这就是<strong>邻接多重表</strong>，如 <code>ivex|ilink|jvex|jlink</code> 。</p>
+<h4 id="边集数组"><a href="#边集数组" class="headerlink" title="边集数组"></a>边集数组</h4><p>边集数组由两个一维数组组成。一个存储顶点信息；另一个存储边的信息，边数组中的数据元素由起点下标、终点下标和权值组成，如 <code>begin|end|weight</code> 。</p>
+<h3 id="图的遍历"><a href="#图的遍历" class="headerlink" title="图的遍历"></a>图的遍历</h3><p>从图中某一顶点出发，访问图中其余顶点，且使每个顶点仅被访问一次，这一过程叫图的遍历（Traversing Graph）。</p>
+<p>todo</p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.ulyssesss.com/2016/07/25/图/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2016/09/30/常见-bash-shell-命令总结/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            常见 bash shell 命令总结
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2016/07/19/树/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">树</div>
+      </a>
+    
+  </nav>
+
+   
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2016-2021
+        <i class="ri-heart-fill heart_icon"></i> 大雪碧
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/assets/img/head.svg" alt=""></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>谢谢老板</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/assets/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/assets/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<link rel="stylesheet" href="/css/clipboard.css">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    初识 Kafka |  
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/dist/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-初识-Kafka"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  初识 Kafka
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2018/06/05/初识-Kafka/" class="article-date">
+  <time datetime="2018-06-05T07:25:33.000Z" itemprop="datePublished">2018-06-05</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技术/">技术</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.7k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">5 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>Kafka 最初是 LinkedIn 的一个内部基础组件，用于处理持续的数据流，之后开源成为 Apache 项目。</p>
+<p>Kafka 初衷是构建一个流平台，在平台上发布和订阅数据流，保存和处理数据。</p>
+<p>Kafka 不同于一般的消息系统。作为现代分布式系统，Kafka 以集群方式运行，可以自由伸缩；Kafka 可以按要求存储数据，通过复制、持久化提供数据传递保证；Kafka 拥有流式处理能力，可动态处理派生流和数据集。</p>
+<a id="more"></a>
+<h2 id="发布与订阅消息系统"><a href="#发布与订阅消息系统" class="headerlink" title="发布与订阅消息系统"></a>发布与订阅消息系统</h2><p>在正式介绍 Kafka 之前，先介绍一下发布与订阅消息系统的概念及重要性。</p>
+<p>在发布与订阅消息系统中，发送方不直接将消息发送到接收方，而是先以某种方式对消息进行分类，然后发送到消息中心；接收者订阅特定类型的消息，从而通过消息中心接收特定类型的消息。</p>
+<p>如果不使用消息系统，应用 A 直接将消息发送给应用 B，在简单场景下没有问题。而如果应用 C 也需要接收此类消息，应用 A 就需要将消息同时发送给 B 和 C。当发送方和接收方逐渐增多，情况会越来越糟。</p>
+<h2 id="Kafka-中的基础概念"><a href="#Kafka-中的基础概念" class="headerlink" title="Kafka 中的基础概念"></a>Kafka 中的基础概念</h2><p>Kafka 是一款基于发布与订阅的消息系统，消息按一定的顺序持久化保存，可按需读取，具备故障保护和性能伸缩能力。</p>
+<h3 id="消息与批次"><a href="#消息与批次" class="headerlink" title="消息与批次"></a>消息与批次</h3><p>消息是 Kafka 的数据单元，类似数据库中一个数据行。消息由字节数组组成，同时有一个可选的元数据——键。键也是一个字节数组，用于将消息以可控方式写入到不同分区。</p>
+<p>批次为属于同一个主题和分区的一组消息，消息分批写入 Kafka 可以减小网络开销，提升效率。注意，批次越大，单次传输时间越长。压缩批次数据可以通过计算处理提升传输和存储能力。</p>
+<h3 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h3><p>模式（schema）即消息内容的结构，由于 Kafka 的消息内容为晦涩难懂的字符数组，额外的结构可以使消息容易理解，如 JSON 或 XML。</p>
+<p>Kafka 的许多开发者使用 Apache Avro 序列化框架。Avro 提供一种紧凑的序列化格式，模式与消息体分开，模式发生变化时不需要重新生成代码，既向前兼容又向后兼容。</p>
+<h3 id="主题和分区"><a href="#主题和分区" class="headerlink" title="主题和分区"></a>主题和分区</h3><p>Kafka 中的消息通过主题进行分类，相当于数据库中的表。主题可以分为若干个分区，消息以追加的方式写入其中一个分区，按先入先出的顺序读取。</p>
+<p>一个主题通常包含多个分区，无法在主题范围内保证消息顺序，但可以保证单个分区内的顺序。</p>
+<p>分区可以分布在不同的服务器上，主题横跨多个服务器，能够提供比单个服务器更强的性能。</p>
+<h3 id="生产者和消费者"><a href="#生产者和消费者" class="headerlink" title="生产者和消费者"></a>生产者和消费者</h3><p>Kafka 的客户端有生产者和消费者两种基本类型。</p>
+<p>生产者创建特定主题的消息，默认情况把消息均衡地写入到主题的所有分区上，也可以通过键或直接指定写入的分区。</p>
+<p>消费者订阅一个或多个主题，按消息生成顺序来读取消息。消费者通过检查消息的偏移量来区分是否已经读取过某条消息。</p>
+<p>偏移量是一种元数据（不断递增的整数值），创建消息时会将偏移量添加到消息中，分区内消息的偏移量唯一。消费者将每个分区最后读取消息的偏移量记录在 ZooKeeper 或 Kafka 中，消费者关闭或重启读取状态不会丢失。</p>
+<p>Kafka 中有消费者群组的概念，消费者是消费者群组的一部分，一个或多个消费者共同读取一个主题。群组保证每个分区只能被一个消费者使用，群组中的消费者和分区之间的映射称为消费者对分区的所有权关系。当一个消费者失效，群组内的其他消费者可以接管失效消费者的工作。</p>
+<h3 id="broker-和集群"><a href="#broker-和集群" class="headerlink" title="broker 和集群"></a>broker 和集群</h3><p>一个独立的 Kafka 服务器被称为 broker。broker 接收来自生产者的消息，为消息设置偏移量并保存。broker 为消费者提供服务，接收读取分区的请求并返回消息。单个 broker 可以轻松处理数千个分区及每秒百万级的消息量。</p>
+<p>多个 broker 组成集群，每个集群中都有一个 broker 同时充当了集群控制器的角色，负责将分区分配给 broker 和监控等工作。每个分区从属于一个 broker，该 broker 称为分区的首领。分区分配给多个 broker 时会发生分区复制，提供消息冗余，在首领 broker 失效时接管领导权。</p>
+<p>随 Kafka 部署数量增加，可以使用多个集群，多个集群间实现消息复制需要使用一个叫 MirrorMaker 的工具。</p>
+<h2 id="为什么选择-Kafka"><a href="#为什么选择-Kafka" class="headerlink" title="为什么选择 Kafka"></a>为什么选择 Kafka</h2><p>基于发布与订阅的消息系统很多，而 Kafka 有以下优点：</p>
+<h3 id="多个生产者"><a href="#多个生产者" class="headerlink" title="多个生产者"></a>多个生产者</h3><p>Kafka 天然支持多个生产者，并以统一的格式对外提供数据，消费者无需协调来自不同生产者的数据流。</p>
+<h3 id="多个消费者"><a href="#多个消费者" class="headerlink" title="多个消费者"></a>多个消费者</h3><p>Kafka 支持多个消费者从一个消息流上读取数据，消费者之间互不影响。多个消费者也可以组成一个群组，共享一个消息流，保证整个群组对每条消息只处理一次。</p>
+<h3 id="基于磁盘的数据存储"><a href="#基于磁盘的数据存储" class="headerlink" title="基于磁盘的数据存储"></a>基于磁盘的数据存储</h3><p>Kafka 中消息被提交到磁盘，根据设置的保留规则进行保存，每个主题可以设置单独的保留规则，所以允许消费者非实时地读取消息，无需担心消息丢失。</p>
+<h3 id="伸缩性"><a href="#伸缩性" class="headerlink" title="伸缩性"></a>伸缩性</h3><p>Kafka 是一个具有灵活伸缩性的系统，可以先使用单个 broker，再扩展到包含 3 个 broker 的小型开发集群。对在线集群进行扩展不会影响整体的可用性。</p>
+<h3 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h3><p>通过横向扩展生产者、消费者和 broker，Kafka 可以轻松处理巨大的信息流，同时保证亚秒级的消息延迟。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://kafka.apache.org/documentation/" target="_blank" rel="noopener">Kafka 官方文档</a></p>
+<p><a href="http://shop.oreilly.com/product/0636920044123.do" target="_blank" rel="noopener">Kafka 权威指南</a></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.ulyssesss.com/2018/06/05/初识-Kafka/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kafka/">Kafka</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2018/06/06/Kafka-安装与基本配置/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Kafka 安装与基本配置
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2018/05/04/ZooKeeper-故障处理与注意事项/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">ZooKeeper 故障处理与注意事项</div>
+      </a>
+    
+  </nav>
+
+   
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2016-2021
+        <i class="ri-heart-fill heart_icon"></i> 大雪碧
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/assets/img/head.svg" alt=""></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>谢谢老板</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/assets/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/assets/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<link rel="stylesheet" href="/css/clipboard.css">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>

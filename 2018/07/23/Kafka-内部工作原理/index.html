@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Kafka 内部工作原理 |  
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/dist/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Kafka-内部工作原理"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Kafka 内部工作原理
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2018/07/23/Kafka-内部工作原理/" class="article-date">
+  <time datetime="2018-07-23T02:35:28.000Z" itemprop="datePublished">2018-07-23</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技术/">技术</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">8 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>了解 Kafka 的内部工作原理有助于理解 Kafka 的行为和诊断问题，本篇文章主要从集群成员关系、控制器、复制、处理请求和存储等方面介绍 Kafka 的内部机制。</p>
+<a id="more"></a>
+<h2 id="集群成员关系"><a href="#集群成员关系" class="headerlink" title="集群成员关系"></a>集群成员关系</h2><p>Kafka 使用 ZooKeeper 来维护集群内成员的信息，每个 broker 在启动时都通过在 /brokers/ids 路径创建临时节点将自己的唯一标示 broker.id 注册到 ZooKeeper。</p>
+<p>Kafka 会订阅 ZooKeeper 的 /brokers/ids 路径，在有 broker 加入或退出集群时收到通知。</p>
+<p>关闭 broker 时对应的临时节点会消失，不过它的 id 会继续存储在其他数据中，如主题的副本列表。完全关闭一个 broker 后，如果使用相同 id 启动一个全新 broker，它会立即加入集群，并拥有和旧 broker 相同的分区和主题。</p>
+<h2 id="控制器"><a href="#控制器" class="headerlink" title="控制器"></a>控制器</h2><p>控制器其实是一个 broker，除一般 broker 的功能外，还负责选举分区首领。</p>
+<p>集群内的 broker 通过创建临时节点 /controller 使自己成为控制器，如果收到【节点已存在】异常，即控制器已存在，会创建 ZooKeeper 的 watch 对象，在节点变更时收到通知、再次尝试成为控制器，以确保集群内始终存在一个控制器。</p>
+<p>新选出来的控制器会用一个递增的值更新 /controller_epoch 节点，在其他 broker 收到 controller epoch 的值后，如果收到包含旧的 epoch 的来自控制器的消息就会选择忽略，以此来避免脑裂（多个控制器）。</p>
+<p>当控制器通过 ZooKeeper 路径发现集群内的 broker 离开时，会遍历那些失去首领的分区，在分区副本列表中选择 broker 成为新的首领，然后向所有包含新首领和现有跟随者的 broker 发送请求，传递新首领及跟随者的信息。随后，新首领开始处理来自生产者和消费者的请求，跟随者开始从新首领那里复制消息。</p>
+<h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><p>复制是 Kafka 的核心功能之一，可以在个别节点失效时仍然保证 Kafka 的可用性和持久性。</p>
+<p>Kafka 使用主题来组织数据，每个主题被分成若干个分区，而每个分区可以有多个副本。</p>
+<p>副本分为首领副本和跟随者副本两种。每个分区有一个首领副本，所有生产者、消费者的请求都会经过首领副本。首领以外的副本都是跟随者副本，这些副本不处理来自生产者和消费者的请求，唯一的任务时从首领复制消息，在首领崩溃时成为新首领。</p>
+<p>跟随者副本像消费者一样往首领副本发送请求，请求中包含了跟随者想要获取消息的偏移量，这些偏移量总是有序的。首领通过查看每个跟随者的最新偏移量知道每个跟随者复制的进度。如果跟随者在 10 s 内没有请求最新的数据，就会被认为是不同步的。只有持续请求最新消息的副本才是同步的副本，首领失效时只有同步副本才可能成为新首领。</p>
+<p>除了当前首领外，每个分区都有一个首选首领，即创建主题时选定的首领。创建主题时会在 broker 之间均衡首领，所以当首选首领成为当前首领时，broker 间的负载会得到均衡。默认情况下，auto.leader.rebalance.enable 的值为 true，即如果检查到当前首领不是首选首领且首选首领是同步的，就会出发首领选举，让首选首领成为当前首领。</p>
+<h2 id="处理请求"><a href="#处理请求" class="headerlink" title="处理请求"></a>处理请求</h2><p>broker 的大部分工作是处理客户端、分区副本和控制器发送给分区首领的请求，Kafka 提供一个基于 TCP 的二进制协议来指定请求和相应的格式，并按请求到达的顺序来处理。</p>
+<p>broker 在监听的端口上运行 Acceptor 线程，线程创建连接后交给 Processor 线程去处理。Processor 线程将请求放入请求队列，IO 线程处理后将响应放入响应队列，再由 Processor 线程返回响应。</p>
+<p>生产者和消费者的请求必须发送给分区的首领副本，对特定分区的获取请求也不能发送给不含该分区首领的 broker 上。客户端通过请求元数据来确定请求该发往何处，请求包含订阅的主题列表，响应包含主题的分区、副本信息。客户端会缓存元数据信息，通过 metadata.max.age.ms 可以配置刷新时间。如果 broker 收到不该发向自己的请求，会返回相应的错误，客户端收到错误后会刷新元数据并重发请求。</p>
+<h3 id="生产请求"><a href="#生产请求" class="headerlink" title="生产请求"></a>生产请求</h3><p>生产者使用 acks 配置项来定义需要多少个 broker 确认才能认为消息写入成功。acks 为 0 时只需发送消息，不会等待 broker 确认；acks 为 1 时只要首领确认就算写入成功；acks 为 all 时需要所有 broker 确认才算成功。</p>
+<p>broker 收到生产请求后，会判断用户是否有写入权限、检查 acks 的值是否有效，如果 acks 为 all 时还会检查是否有足够的 broker 保证消息能被安全写入。</p>
+<p>在通过一些列的检查后，broker 会将消息写入到文件系统缓存中，不保证何时被刷新到磁盘上。Kafka 不会等待数据写入磁盘，而是依赖复制保证持久性。消息写入分区首领后，如果 acks 大于 1，则放入一个缓冲区，等待其他 broker 响应，否则直接返回给客户端。</p>
+<h3 id="获取请求"><a href="#获取请求" class="headerlink" title="获取请求"></a>获取请求</h3><p>客户端向 broker 发送获取请求时，会将主题、偏移量等信息传给 broker，而 broker 则先检查请求是否有效，如偏移量是否存在，检查通过后使用零复制技术（直接从文件里发送到网络，不经过缓冲区，性能更好）返回给客户端。</p>
+<p>如果客户端配置了请求数据下限，broker 在消息不够时会先等待，直到消息足够或到达等待时间上限时再返回。</p>
+<p>需要注意的是，大部分客户端只能读取到已经被写入到全部同步副本的消息，没有被写入到全部同步副本的消息被认为是不安全的，如果首领崩溃，可能会破坏一致性。这也意味着如果 broker 间复制消息的速度变慢，消息到达消费者的时间也会变长，可以通过 replica.lag.time.max.ms 来配置复制消息时被允许的最大延迟时间。</p>
+<h2 id="物理存储"><a href="#物理存储" class="headerlink" title="物理存储"></a>物理存储</h2><p>Kafka 的基本存储单元是分区，分区无法在多个 broker 间再细分，也无法在多个磁盘上再细分，所以分区大小受到单个挂载点可用空间的限制。Kafka 通过 log.dirs 来配置存储分区的目录。</p>
+<h3 id="分配分区"><a href="#分配分区" class="headerlink" title="分配分区"></a>分配分区</h3><p>创建主题时，Kafka 会首先决定如何在 broker 间分配分区。在分配分区时，Kafka 会尽可能地将各分区副本在 broker 间均匀分配，首领分区也会尽可能地均匀分配，如果 broker 指定了机架信息，会尽可能地将各分区副本均匀地分配到不同机架。</p>
+<p>分配完分区之后，Kafka 会根据各目录中的分区数量来决定分区使用哪个目录，新的分区总被添加到分区数最小的目录中。</p>
+<h3 id="文件管理"><a href="#文件管理" class="headerlink" title="文件管理"></a>文件管理</h3><p>在一个大文件中查找和删除消息效率不高，所以 Kafka 把每个分区分成若干个片段。默认情况下每个片段包含 1 GB 或一周的数据，以较小的为准。写入数据时，如果达到上限，就关闭当前文件，打开一个新片段。</p>
+<p>正在写入的数据片段称为活跃片段，活跃片段永远不会被删除。已经关闭的不活跃片段，会根据配置的最长保留时间或最大保存消息量来删除旧的消息片段。</p>
+<h3 id="文件格式"><a href="#文件格式" class="headerlink" title="文件格式"></a>文件格式</h3><p>Kafka 的消息和偏移量都保存在文件中，磁盘内的消息、生产者发送过来的消息及发送给消费的消息是一样的，所以可以使用零复制技术发送给消费者。</p>
+<p>另外消息中还包含了消息大小、校验和、消息格式版本号、压缩算法和时间戳，如果生产者发送的是压缩过的消息，同一个批次的消息会被压缩在一起，消费者在解压这个消息后，会看到整个批次的消息。</p>
+<h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><p>消费者可以从任何偏移量位置读取消息，为了能更快地定位到指定偏移量，Kafka 为每个分区维护了一个索引，将偏移量映射到片段文件及在文件中的位置。</p>
+<p>索引也被分成片段，删除消息时也会删除相应的索引。Kafka 不维护索引的校验和，如果索引出现损坏，Kafka 会重新读取消息来生成索引。有必要的话，删除索引的绝对安全的。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://kafka.apache.org/documentation/" target="_blank" rel="noopener">Kafka 官方文档</a></p>
+<p><a href="http://shop.oreilly.com/product/0636920044123.do" target="_blank" rel="noopener">Kafka 权威指南</a></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.ulyssesss.com/2018/07/23/Kafka-内部工作原理/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kafka/">Kafka</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2018/07/24/Kafka-可靠的数据传递/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Kafka 可靠的数据传递
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2018/07/20/Kafka-消费者/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Kafka 消费者</div>
+      </a>
+    
+  </nav>
+
+   
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2016-2021
+        <i class="ri-heart-fill heart_icon"></i> 大雪碧
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/assets/img/head.svg" alt=""></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>谢谢老板</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/assets/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/assets/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<link rel="stylesheet" href="/css/clipboard.css">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>

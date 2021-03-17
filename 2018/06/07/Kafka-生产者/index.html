@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Kafka 生产者 |  
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  <link rel="stylesheet" href="/dist/main.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="null" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Kafka-生产者"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Kafka 生产者
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2018/06/07/Kafka-生产者/" class="article-date">
+  <time datetime="2018-06-07T03:46:47.000Z" itemprop="datePublished">2018-06-07</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/技术/">技术</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>不管把 Kafka 用作消息队列还是数据存储平台，总需要向 Kafka 写入消息的生产者和从 Kafka 读取消息的消费者。</p>
+<p>本篇文章介绍如何创建生产者和消息对象、如何发送消息到 Kafka、生产者的相关配置，以及如何使用分区。</p>
+<a id="more"></a>
+<h2 id="创建生产者和消息对象"><a href="#创建生产者和消息对象" class="headerlink" title="创建生产者和消息对象"></a>创建生产者和消息对象</h2><p>要往 Kafka 写入消息，首先要创建一个生产者对象，并设置一些必要的属性。Kafka 生产者有 3 个必选属性。</p>
+<ul>
+<li>bootstrap.servers</li>
+</ul>
+<p>指定 broker 的地址，格式为 <code>host:port</code> ，多个地址用逗号 <code>,</code> 分隔。建议至少提供两个 broker 地址，其中一台宕机仍然可以连接到集群上。</p>
+<ul>
+<li>key.serializer</li>
+</ul>
+<p>broker 接收到的消息的键为字节数组，而生产者接口允许使用参数化类型，可以把 Java 对象作为键，所以需要知道如何将 Java 对象转为字节数组。</p>
+<p>key.serializer 要求设置为一个实现了 <code>org.apache.kafka.common.serialization.Serializer</code> 接口的类。客户端默认提供了 <code>ByteArraySerializer</code> , <code>StringSerializer</code> 和 <code>IntegerSerializer</code> 。</p>
+<ul>
+<li>value.serializer</li>
+</ul>
+<p>和 key.serializer 一样，value.serializer 指定的类用于序列化消息的值。</p>
+<p>创建消息对象需要指明主题 topic 和值 value，分区 partition 和键 key 可选。指定分区时消息在发送后会直接到达所选分区，不指定分区时会根据键选择一个分区，都不指定时均匀分布到各个分区。</p>
+<p>创建生产者和消息对象的代码示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ulyssesss.kafka;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.KafkaProducer;</span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.ProducerRecord;</span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Producer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Properties properties = <span class="keyword">new</span> Properties();</span><br><span class="line">        properties.put(<span class="string">"bootstrap.servers"</span>, <span class="string">"localhost:9092"</span>);</span><br><span class="line">        properties.put(<span class="string">"key.serializer"</span>, <span class="string">"org.apache.kafka.common.serialization.StringSerializer"</span>);</span><br><span class="line">        properties.put(<span class="string">"value.serializer"</span>, <span class="string">"org.apache.kafka.common.serialization.StringSerializer"</span>);</span><br><span class="line"></span><br><span class="line">        KafkaProducer&lt;String, String&gt; producer = <span class="keyword">new</span> KafkaProducer&lt;String, String&gt;(properties);</span><br><span class="line">        ProducerRecord&lt;String, String&gt; record = <span class="keyword">new</span> ProducerRecord&lt;String, String&gt;(<span class="string">"topic"</span>, <span class="string">"key"</span>, <span class="string">"value"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h2><p>发送消息主要有 3 中方式，即发送并忘记（fire-and-forget）、同步发送和异步发送。</p>
+<h3 id="发送并忘记"><a href="#发送并忘记" class="headerlink" title="发送并忘记"></a>发送并忘记</h3><p>将消息发送给服务器，但不关心消息是否正常到达。大多数时候消息会正常到达，因为集群高可用，并且生产者会在发送失败时自动尝试重发。不过仍然有消息丢失的可能。记录不太重要的日志可以使用这种发送方式。</p>
+<h3 id="同步发送"><a href="#同步发送" class="headerlink" title="同步发送"></a>同步发送</h3><p>发送消息时，生产者的 send 方法会先返回一个 Future 对象，调用 Future 的 get 方法等待 Kafka 响应。如果服务器返回错误，get 方法会抛出异常，否则会得到一个 RecordMetadata 对象。</p>
+<p>生产者可能发生两种错误，一种是连接异常等可以通过重发消息来解决的错误，Kafka 可以配置成自动重试，如果重试多次仍存在问题，会收到重试异常。另一种是消息过大等无法通过重试解决的错误，生产者不会进行重试直接抛出异常。</p>
+<h3 id="异步发送"><a href="#异步发送" class="headerlink" title="异步发送"></a>异步发送</h3><p>大多数时候我们不需要等待响应，不过在遇到消息发送失败的情况时，需要进行抛出异常、记录错误日志等操作。生产者支持异步发送消息的回调，需要在发送消息时传入实现了 <code>org.apache.kafka.clients.producer.Callback</code> 接口的回调对象。</p>
+<p>使用 3 中方式发送消息的代码示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ulyssesss.kafka;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.Callback;</span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.KafkaProducer;</span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.ProducerRecord;</span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.RecordMetadata;</span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutionException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Producer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException, ExecutionException </span>&#123;</span><br><span class="line">        Properties properties = <span class="keyword">new</span> Properties();</span><br><span class="line">        <span class="comment">// ... properties 添加 producer 配置</span></span><br><span class="line">        KafkaProducer&lt;String, String&gt; producer = <span class="keyword">new</span> KafkaProducer&lt;String, String&gt;(properties);</span><br><span class="line">        ProducerRecord&lt;String, String&gt; record = <span class="keyword">new</span> ProducerRecord&lt;String, String&gt;(<span class="string">"topic"</span>, <span class="string">"key"</span>, <span class="string">"value"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//发送并忘记</span></span><br><span class="line">        producer.send(record);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//同步发送</span></span><br><span class="line">        RecordMetadata result = producer.send(record).get();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//异步发送</span></span><br><span class="line">        producer.send(record, <span class="keyword">new</span> Callback() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompletion</span><span class="params">(RecordMetadata metadata, Exception exception)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (exception != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    exception.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="生产者的配置"><a href="#生产者的配置" class="headerlink" title="生产者的配置"></a>生产者的配置</h2><p>前面在创建生产者时只配置了 3 个必要参数，生产者还有很多可配置的参数，都有合理的默认值。下面介绍一些常用的配置，在内存使用、性能和可靠性方面对生产者影响较大。</p>
+<h3 id="acks"><a href="#acks" class="headerlink" title="acks"></a>acks</h3><p>指定需要有多少个分区副本收到消息，生产者才认为消息写入成功。</p>
+<p>acks=0 时生产者不会等待来自任何服务器的响应，如果当中出了任何问题消息都会丢失，不过能够以最大速度发送消息。acks=1 时只要集群首领节点收到消息生产者就会收到服务器的成功响应。acks=all 时需要等全部参与复制的节点都收到消息时才有成功响应。</p>
+<h3 id="buffer-memory"><a href="#buffer-memory" class="headerlink" title="buffer.memory"></a>buffer.memory</h3><p>生产者内存缓冲区大小，用于缓冲要发送到服务器的消息。当发送消息的速度超过发送到服务器的速度，会在内存中形成消息堆积，当堆积的消息大小超过缓冲区大小时，根据 max.block.ms 所配置的阻塞时间决定被阻塞还是抛出异常。</p>
+<h3 id="compression-type"><a href="#compression-type" class="headerlink" title="compression.type"></a>compression.type</h3><p>默认情况下消息发送时不会被压缩，改配置可以设置为 snappy、gzip 或 lz4，指定发送给 broker 前采用的压缩算法。snappy 占用较少传递 CPU，能够提供较好的性能好压缩比。gzip 占用较多 CPU，提供更高的压缩比。</p>
+<h3 id="retries"><a href="#retries" class="headerlink" title="retries"></a>retries</h3><p>生产者收到服务器返回的错误时，如果为临时性错误，会依据该配置决定可以重试的次数。如果达到所配置的重试次数依然没有成功，则放弃并返回错误。默认的重试间隔为 100 ms，可通过 retry.backoff.ms 来调整。</p>
+<p>因为生产者会自动进行重试，所以只需要处理不可重试的错误和重试次数到达上线的情况。</p>
+<h3 id="batch-size"><a href="#batch-size" class="headerlink" title="batch.size"></a>batch.size</h3><p>多个消息要被发送到同一分区时，生产者会将消息放到同一个批次中统一发送。该参数指定批次可以使用的内存字节数，批次被填满时发送所有消息。不过并非要等到批次填满才会发送，只包含一条消息的批次也可能被发送。就算批次大小设置的很大，也不会造成延迟，只会占用更多的内存。</p>
+<h3 id="linger-ms"><a href="#linger-ms" class="headerlink" title="linger.ms"></a>linger.ms</h3><p>指定等待更多消息加入批次的时间。生产者在批次填满或等待 linger.ms 所配置的时间后发送批次。默认情况下只要有可用的线程就会立即发送消息。设置为大于 0 的数虽然会增加延迟，但能明显提升吞吐量。</p>
+<h3 id="client-id"><a href="#client-id" class="headerlink" title="client.id"></a>client.id</h3><p>任意字符串，用于标记消息来源。</p>
+<h3 id="max-in-flight-requests-per-connection"><a href="#max-in-flight-requests-per-connection" class="headerlink" title="max.in.flight.requests.per.connection"></a>max.in.flight.requests.per.connection</h3><p>指定生产者在收到服务器响应之前可以发送多少次消息，为 1 可以保证按照发送顺序写入到服务器，即使发生了重试。该参数的值越高，占用内存越大，吞吐量也越大。</p>
+<h3 id="timeout-ms、request-timeout-ms-和-metadata-fetch-timeout-ms"><a href="#timeout-ms、request-timeout-ms-和-metadata-fetch-timeout-ms" class="headerlink" title="timeout.ms、request.timeout.ms 和 metadata.fetch.timeout.ms"></a>timeout.ms、request.timeout.ms 和 metadata.fetch.timeout.ms</h3><p>分别指定 broker 间同步副本等待响应的超时时间，生产者发送数据等待响应的超时时间和生产者获取元数据（如目标分区的首领是哪个 broker）等待服务器响应的超时时间。</p>
+<h3 id="max-block-ms"><a href="#max-block-ms" class="headerlink" title="max.block.ms"></a>max.block.ms</h3><p>该参数指定在调用 send 方法或使用 partitionsFor 方法获取元数据时的最大阻塞时，阻塞时间达到 max.block.ms 时生产者会抛出异常。</p>
+<h3 id="max-request-size"><a href="#max-request-size" class="headerlink" title="max.request.size"></a>max.request.size</h3><p>用于控制生产者发送请求的大小，即可以指单个消息，也可以指批次内所有消息的总大小。broker 也有对消息大小的限制，最好配置可以匹配，避免请求被 broker 拒绝。</p>
+<h3 id="receive-buffer-bytes-和-send-buffer-bytes"><a href="#receive-buffer-bytes-和-send-buffer-bytes" class="headerlink" title="receive.buffer.bytes 和 send.buffer.bytes"></a>receive.buffer.bytes 和 send.buffer.bytes</h3><p>指定 TCP socket 接收和发送数据包的缓冲区大小，为 -1 时使用操作系统的默认值。如果生产者与 broker 处于不同的数据中心，可以适当增大配置。</p>
+<h2 id="如何使用分区"><a href="#如何使用分区" class="headerlink" title="如何使用分区"></a>如何使用分区</h2><p>ProducerRecord 对象可以只包含主题和值，键默认为 null。键既可以作为消息的附加信息，也可以用于决定消息被写入哪个分区。</p>
+<p>键为 null 时，如使用默认分区器，则通过轮训将消息随机写入到各个可用分区。键不为空时，默认分区器会使用散列算法将消息映射到所有分区上。</p>
+<p>如果需要自定义分区器，可以实现 Partitioner 接口，并重载 partition 方法，实例代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ulyssesss.kafka;</span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.Partitioner;</span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.common.Cluster;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyPartitioner</span> <span class="keyword">implements</span> <span class="title">Partitioner</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(String topic, Object key, <span class="keyword">byte</span>[] keyBytes, Object value, <span class="keyword">byte</span>[] valueBytes, Cluster cluster)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//分区逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(Map&lt;String, ?&gt; configs)</span> </span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实现自定义分区器后，需要在生产者的配置中指明所用的分区器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">properties.put(<span class="string">"partitioner.class"</span>, <span class="string">"com.ulyssesss.kafka.MyPartitioner"</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://kafka.apache.org/documentation/" target="_blank" rel="noopener">Kafka 官方文档</a></p>
+<p><a href="http://shop.oreilly.com/product/0636920044123.do" target="_blank" rel="noopener">Kafka 权威指南</a></p>
+ 
+      <!-- reward -->
+      
+      <div id="reword-out">
+        <div id="reward-btn">
+          打赏
+        </div>
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://blog.ulyssesss.com/2018/06/07/Kafka-生产者/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Kafka/">Kafka</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2018/07/20/Kafka-消费者/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Kafka 消费者
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2018/06/06/Kafka-安装与基本配置/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Kafka 安装与基本配置</div>
+      </a>
+    
+  </nav>
+
+   
+ 
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2016-2021
+        <i class="ri-heart-fill heart_icon"></i> 大雪碧
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/assets/img/head.svg" alt=""></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>谢谢老板</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/assets/img/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/assets/img/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<!-- Tocbot -->
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+<script src="/dist/main.js"></script>
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<link rel="stylesheet" href="/css/clipboard.css">
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+    
+  </div>
+</body>
+
+</html>
